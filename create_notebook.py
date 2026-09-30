@@ -1,0 +1,405 @@
+"""
+Generates the complete Plant_Disease_Classification_CNN.ipynb notebook file.
+"""
+
+import json
+
+def create_notebook():
+    notebook = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "# 🌿 Plant Disease Identification & Health Diagnosis System\n",
+                    "### Deep Learning Convolutional Neural Network (CNN) for Multi-Class Leaf Disease Classification\n",
+                    "\n",
+                    "--- \n",
+                    "\n",
+                    "## 📌 Executive Summary & Problem Statement\n",
+                    "Agricultural crop diseases significantly impact global food security, crop yield, and farm profitability. Early and accurate detection of plant foliar diseases is critical for timely agricultural intervention. \n",
+                    "\n",
+                    "In this notebook, we develop an end-to-end Computer Vision system using a custom **Deep Convolutional Neural Network (CNN)** trained on the **PlantVillage** dataset. The dataset comprises over 20,000 leaf images categorized into **15 distinct health & disease classes** across three major crops:\n",
+                    "- 🫑 **Pepper (Bell):** Bacterial Spot, Healthy\n",
+                    "- 🥔 **Potato:** Early Blight, Late Blight, Healthy\n",
+                    "- 🍅 **Tomato:** Bacterial Spot, Early Blight, Late Blight, Leaf Mold, Septoria Leaf Spot, Spider Mites, Target Spot, Yellow Leaf Curl Virus, Mosaic Virus, Healthy\n",
+                    "\n",
+                    "### Workflow Overview:\n",
+                    "1. **Environment Setup & Data Ingestion**: Load images, verify dataset integrity, index classes.\n",
+                    "2. **Exploratory Data Analysis (EDA)**: Class distribution visualization and sample inspection.\n",
+                    "3. **Preprocessing & Augmentation**: Stratified 80/10/10 split, spatial resizing ($128\\times 128$), rotation/flip augmentations, and ImageNet tensor normalization.\n",
+                    "4. **Custom CNN Architecture (`PlantDiseaseCNN`)**: 4 Convolutional blocks (Conv2D -> BatchNorm -> ReLU -> MaxPool -> Dropout) + Global Adaptive Average Pooling + Dense Classifier.\n",
+                    "5. **Training & Optimization**: Train using AdamW optimizer with learning rate scheduler (`ReduceLROnPlateau`) and CrossEntropyLoss.\n",
+                    "6. **Model Evaluation & Visualizations**: Overall Test Accuracy, Precision, Recall, F1-Score, Confusion Matrix, and Prediction Grids.\n",
+                    "7. **Model Deployment Artifacts**: Export weights (`plant_disease_cnn.pth`) and metadata (`class_names.json`) for Streamlit/Gradio web apps."
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 1: Environment Setup & Library Imports"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "import os\n",
+                    "import sys\n",
+                    "import json\n",
+                    "import time\n",
+                    "from glob import glob\n",
+                    "from PIL import Image\n",
+                    "import numpy as np\n",
+                    "import pandas as pd\n",
+                    "import matplotlib.pyplot as plt\n",
+                    "import seaborn as sns\n",
+                    "\n",
+                    "import torch\n",
+                    "import torch.nn as nn\n",
+                    "import torch.optim as optim\n",
+                    "from torch.utils.data import Dataset, DataLoader\n",
+                    "import torchvision.transforms as T\n",
+                    "from sklearn.model_selection import train_test_split\n",
+                    "from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_recall_fscore_support\n",
+                    "\n",
+                    "from src.dataset import prepare_dataloaders, scan_plant_village\n",
+                    "from src.model import PlantDiseaseCNN\n",
+                    "from src.utils import DISEASE_INFO, clean_class_name\n",
+                    "\n",
+                    "# Set random seeds for reproducibility\n",
+                    "torch.manual_seed(42)\n",
+                    "np.random.seed(42)\n",
+                    "\n",
+                    "device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n",
+                    "print(f'PyTorch Version : {torch.__version__}')\n",
+                    "print(f'Active Computing Device : {device}')"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 2: Dataset Scanning & Exploratory Data Analysis (EDA)\n",
+                    "We inspect the dataset structure, count the total images per class, and visualize sample leaf images from each category."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "data_dir = r'c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage'\n",
+                    "class_names, image_paths, labels = scan_plant_village(data_dir)\n",
+                    "\n",
+                    "# Create DataFrame for EDA\n",
+                    "df_eda = pd.DataFrame({\n",
+                    "    'image_path': image_paths,\n",
+                    "    'raw_class': [class_names[i] for i in labels],\n",
+                    "    'clean_name': [clean_class_name(class_names[i]) for i in labels]\n",
+                    "})\n",
+                    "\n",
+                    "print(f'Total Images Found : {len(df_eda)}')\n",
+                    "print(f'Total Classes      : {len(class_names)}')\n",
+                    "df_summary = df_eda['clean_name'].value_counts().reset_index()\n",
+                    "df_summary.columns = ['Disease / Health Category', 'Image Count']\n",
+                    "display(df_summary)"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Visualize Class Distribution\n",
+                    "plt.figure(figsize=(12, 6))\n",
+                    "sns.barplot(data=df_summary, x='Image Count', y='Disease / Health Category', palette='viridis')\n",
+                    "plt.title('PlantVillage Dataset Class Distribution (15 Categories)', fontsize=14, fontweight='bold')\n",
+                    "plt.xlabel('Number of Images')\n",
+                    "plt.ylabel('')\n",
+                    "for i, v in enumerate(df_summary['Image Count']):\n",
+                    "    plt.text(v + 30, i, str(v), va='center', fontsize=10)\n",
+                    "plt.tight_layout()\n",
+                    "plt.show()"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Sample Image Visualizations Grid\n",
+                    "fig, axes = plt.subplots(3, 5, figsize=(18, 10))\n",
+                    "axes = axes.flatten()\n",
+                    "\n",
+                    "for idx, cls in enumerate(class_names):\n",
+                    "    sample_path = df_eda[df_eda['raw_class'] == cls]['image_path'].iloc[0]\n",
+                    "    img = Image.open(sample_path)\n",
+                    "    axes[idx].imshow(img)\n",
+                    "    axes[idx].set_title(clean_class_name(cls), fontsize=9, fontweight='bold')\n",
+                    "    axes[idx].axis('off')\n",
+                    "\n",
+                    "plt.tight_layout()\n",
+                    "plt.suptitle('Sample Leaf Images Across 15 Categories', fontsize=16, fontweight='bold', y=1.02)\n",
+                    "plt.show()"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 3: Data Preprocessing & Augmentation Pipelines\n",
+                    "We split data into **Train (80%)**, **Validation (10%)**, and **Test (10%)** sets using stratified sampling to maintain identical class ratios. Data augmentation (rotations, flips, color jitter) is applied exclusively to the training set."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "IMG_SIZE = 128\n",
+                    "BATCH_SIZE = 64\n",
+                    "\n",
+                    "train_loader, val_loader, test_loader, split_info = prepare_dataloaders(\n",
+                    "    data_dir, img_size=IMG_SIZE, batch_size=BATCH_SIZE\n",
+                    ")\n",
+                    "\n",
+                    "print(f'Train Batches      : {len(train_loader)} ({split_info[\"train_size\"]} images)')\n",
+                    "print(f'Validation Batches : {len(val_loader)} ({split_info[\"val_size\"]} images)')\n",
+                    "print(f'Test Batches       : {len(test_loader)} ({split_info[\"test_size\"]} images)')"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 4: Deep CNN Model Architecture Definition\n",
+                    "We construct `PlantDiseaseCNN` featuring 4 Convolutional blocks, Batch Normalization, ReLU activations, Max Pooling, Dropout regularization, Global Adaptive Pooling, and a Dense classification head."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "model = PlantDiseaseCNN(num_classes=len(class_names), dropout_rate=0.4).to(device)\n",
+                    "print(model)\n",
+                    "\n",
+                    "total_params = sum(p.numel() for p in model.parameters())\n",
+                    "trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)\n",
+                    "print(f'\\nTotal Parameters    : {total_params:,}')\n",
+                    "print(f'Trainable Parameters : {trainable_params:,}')"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 5: Model Training & Validation Loop"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Training configuration\n",
+                    "EPOCHS = 6\n",
+                    "criterion = nn.CrossEntropyLoss()\n",
+                    "optimizer = optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)\n",
+                    "scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.5, patience=1)\n",
+                    "\n",
+                    "MODEL_SAVE_PATH = 'plant_disease_cnn.pth'\n",
+                    "best_val_acc = 0.0\n",
+                    "history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}\n",
+                    "\n",
+                    "print('Starting Model Training...')\n",
+                    "start_time = time.time()\n",
+                    "\n",
+                    "for epoch in range(1, EPOCHS + 1):\n",
+                    "    epoch_start = time.time()\n",
+                    "    \n",
+                    "    # Training step\n",
+                    "    model.train()\n",
+                    "    t_loss, t_correct, t_total = 0.0, 0, 0\n",
+                    "    for imgs, lbls in train_loader:\n",
+                    "        imgs, lbls = imgs.to(device), lbls.to(device)\n",
+                    "        optimizer.zero_grad()\n",
+                    "        outs = model(imgs)\n",
+                    "        loss = criterion(outs, lbls)\n",
+                    "        loss.backward()\n",
+                    "        optimizer.step()\n",
+                    "        t_loss += loss.item() * imgs.size(0)\n",
+                    "        _, preds = torch.max(outs, 1)\n",
+                    "        t_correct += (preds == lbls).sum().item()\n",
+                    "        t_total += lbls.size(0)\n",
+                    "    \n",
+                    "    train_loss = t_loss / t_total\n",
+                    "    train_acc = t_correct / t_total\n",
+                    "    \n",
+                    "    # Validation step\n",
+                    "    model.eval()\n",
+                    "    v_loss, v_correct, v_total = 0.0, 0, 0\n",
+                    "    with torch.no_grad():\n",
+                    "        for imgs, lbls in val_loader:\n",
+                    "            imgs, lbls = imgs.to(device), lbls.to(device)\n",
+                    "            outs = model(imgs)\n",
+                    "            loss = criterion(outs, lbls)\n",
+                    "            v_loss += loss.item() * imgs.size(0)\n",
+                    "            _, preds = torch.max(outs, 1)\n",
+                    "            v_correct += (preds == lbls).sum().item()\n",
+                    "            v_total += lbls.size(0)\n",
+                    "            \n",
+                    "    val_loss = v_loss / v_total\n",
+                    "    val_acc = v_correct / v_total\n",
+                    "    scheduler.step(val_acc)\n",
+                    "    \n",
+                    "    history['train_loss'].append(train_loss)\n",
+                    "    history['train_acc'].append(train_acc)\n",
+                    "    history['val_loss'].append(val_loss)\n",
+                    "    history['val_acc'].append(val_acc)\n",
+                    "    \n",
+                    "    epoch_time = time.time() - epoch_start\n",
+                    "    print(f'Epoch [{epoch:02d}/{EPOCHS:02d}] ({epoch_time:.1f}s) | '\n",
+                    "          f'Train Loss: {train_loss:.4f} | Train Acc: {train_acc*100:.2f}% | '\n",
+                    "          f'Val Loss: {val_loss:.4f} | Val Acc: {val_acc*100:.2f}%')\n",
+                    "          \n",
+                    "    if val_acc > best_val_acc:\n",
+                    "        best_val_acc = val_acc\n",
+                    "        torch.save(model.state_dict(), MODEL_SAVE_PATH)\n",
+                    "        print(f'  --> Saved best weights checkpoint (Val Acc: {val_acc*100:.2f}%)')\n",
+                    "\n",
+                    "print(f'Total Training Time: {(time.time() - start_time)/60:.2f} mins')"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 6: Model Evaluation & Performance Metrics\n",
+                    "We evaluate the saved best model on the unseen **Test Dataset**, calculating accuracy, precision, recall, F1-score, and generating confusion matrix heatmaps."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Load best model weights\n",
+                    "model.load_state_dict(torch.load(MODEL_SAVE_PATH, map_location=device))\n",
+                    "model.eval()\n",
+                    "\n",
+                    "y_pred, y_true = [], []\n",
+                    "with torch.no_grad():\n",
+                    "    for imgs, lbls in test_loader:\n",
+                    "        imgs, lbls = imgs.to(device), lbls.to(device)\n",
+                    "        outs = model(imgs)\n",
+                    "        _, preds = torch.max(outs, 1)\n",
+                    "        y_pred.extend(preds.cpu().numpy())\n",
+                    "        y_true.extend(lbls.cpu().numpy())\n",
+                    "\n",
+                    "test_acc = accuracy_score(y_true, y_pred)\n",
+                    "clean_labels = [clean_class_name(c) for c in class_names]\n",
+                    "\n",
+                    "print(f'=== OVERALL TEST ACCURACY: {test_acc*100:.2f}% ===\\n')\n",
+                    "print(classification_report(y_true, y_pred, target_names=clean_labels, digits=4))"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Confusion Matrix Heatmap\n",
+                    "cm = confusion_matrix(y_true, y_pred)\n",
+                    "plt.figure(figsize=(14, 10))\n",
+                    "sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=clean_labels, yticklabels=clean_labels)\n",
+                    "plt.title('Plant Disease Classification - Confusion Matrix (Test Set)', fontsize=14, fontweight='bold')\n",
+                    "plt.xlabel('Predicted Label')\n",
+                    "plt.ylabel('True Label')\n",
+                    "plt.xticks(rotation=45, ha='right', fontsize=9)\n",
+                    "plt.yticks(fontsize=9)\n",
+                    "plt.tight_layout()\n",
+                    "plt.show()"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# Sample Test Prediction Grid\n",
+                    "fig, axes = plt.subplots(3, 4, figsize=(16, 12))\n",
+                    "axes = axes.flatten()\n",
+                    "\n",
+                    "eval_transform = T.Compose([\n",
+                    "    T.Resize((IMG_SIZE, IMG_SIZE)),\n",
+                    "    T.ToTensor(),\n",
+                    "    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])\n",
+                    "])\n",
+                    "\n",
+                    "sample_indices = np.random.choice(len(test_loader.dataset), 12, replace=False)\n",
+                    "for i, idx in enumerate(sample_indices):\n",
+                    "    img_path = test_loader.dataset.image_paths[idx]\n",
+                    "    true_lbl = test_loader.dataset.labels[idx]\n",
+                    "    \n",
+                    "    raw_img = Image.open(img_path).convert('RGB')\n",
+                    "    img_tensor = eval_transform(raw_img).unsqueeze(0).to(device)\n",
+                    "    \n",
+                    "    with torch.no_grad():\n",
+                    "        out = model(img_tensor)\n",
+                    "        prob = torch.softmax(out, dim=1)\n",
+                    "        pred_lbl = int(prob.argmax())\n",
+                    "        conf = float(prob.max()) * 100\n",
+                    "        \n",
+                    "    color = 'green' if pred_lbl == true_lbl else 'red'\n",
+                    "    axes[i].imshow(raw_img)\n",
+                    "    title_text = f'True: {clean_class_name(class_names[true_lbl])}\\nPred: {clean_class_name(class_names[pred_lbl])} ({conf:.1f}%)'\n",
+                    "    axes[i].set_title(title_text, fontsize=9, color=color, fontweight='bold')\n",
+                    "    axes[i].axis('off')\n",
+                    "\n",
+                    "plt.tight_layout()\n",
+                    "plt.suptitle('Sample Predictions on Test Images', fontsize=16, fontweight='bold', y=1.02)\n",
+                    "plt.show()"
+                ]
+            },
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "## Step 7: Saved Artifacts & Web App Deployment\n",
+                    "The model has been successfully trained and evaluated. Artifacts created for deployment:\n",
+                    "1. `plant_disease_cnn.pth`: Trained PyTorch CNN model weights.\n",
+                    "2. `class_names.json`: Category index mappings.\n",
+                    "3. `app.py`: Interactive Streamlit Web Application (`streamlit run app.py`).\n",
+                    "4. `gradio_app.py`: Interactive Gradio Web Application (`python gradio_app.py`)."
+                ]
+            }
+        ],
+        "metadata": {
+            "language_info": {
+                "name": "python"
+            }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+    }
+    
+    with open(r"c:\Users\cnive\Ai training\CNN\Plant_Disease_Classification_CNN.ipynb", "w", encoding="utf-8") as f:
+        json.dump(notebook, f, indent=2)
+    print("[+] Successfully generated Plant_Disease_Classification_CNN.ipynb")
+
+if __name__ == "__main__":
+    create_notebook()

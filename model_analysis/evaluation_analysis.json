@@ -1,0 +1,259 @@
+{
+    "test_accuracy": 0.9859496124031008,
+    "test_images": 2064,
+    "correct_predictions": 2035,
+    "incorrect_predictions": 29,
+    "most_common_confusions": [
+        {
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Bacterial Spot",
+            "count": 5
+        },
+        {
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Septoria Leaf Spot",
+            "count": 3
+        },
+        {
+            "actual": "Tomato - Target Spot",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "count": 3
+        },
+        {
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Late Blight",
+            "count": 2
+        },
+        {
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Leaf Mold",
+            "count": 2
+        },
+        {
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Pepper (Bell) - Bacterial Spot",
+            "count": 2
+        },
+        {
+            "actual": "Tomato - Spider Mites (Two-Spotted)",
+            "predicted": "Tomato - Leaf Mold",
+            "count": 2
+        },
+        {
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "count": 1
+        },
+        {
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Target Spot",
+            "count": 1
+        },
+        {
+            "actual": "Potato - Healthy Leaf",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "count": 1
+        },
+        {
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Late Blight",
+            "count": 1
+        },
+        {
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Leaf Mold",
+            "count": 1
+        },
+        {
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Early Blight",
+            "count": 1
+        },
+        {
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Potato - Early Blight",
+            "count": 1
+        },
+        {
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Tomato - Leaf Mold",
+            "count": 1
+        }
+    ],
+    "misclassified_images": [
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Potato___Late_blight\\04b964fd-7033-4cdf-88ef-b1acbcd8183a___RS_LB 2783.JPG",
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "confidence": 0.7192353010177612
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\f0763973-1898-4ae6-9350-c9b61976c600___RS_Erly.B 6456.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Bacterial Spot",
+            "confidence": 0.8279402852058411
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Late_blight\\4184f74c-6054-473f-babc-fa5cbca7f5b4___GHLB2ES Leaf 135.JPG",
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Leaf Mold",
+            "confidence": 0.9963726997375488
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Potato___healthy\\36bdc44c-96a4-40bb-86f7-63a91d706e96___RS_HL 4203.JPG",
+            "actual": "Potato - Healthy Leaf",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "confidence": 0.6709501147270203
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Late_blight\\63c3c2c0-f5fc-4d89-9990-784c9229542e___RS_Late.B 5612.JPG",
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Septoria Leaf Spot",
+            "confidence": 0.47793498635292053
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Septoria_leaf_spot\\dba28341-c2bb-4c7f-a15b-8fac8f38e00b___JR_Sept.L.S 8371.JPG",
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Pepper (Bell) - Bacterial Spot",
+            "confidence": 0.7150276303291321
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\ba19f779-d0cf-4bc7-88df-96e6080fdc96___RS_Erly.B 7599.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Late Blight",
+            "confidence": 0.8488326072692871
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\6a6f1594-62fa-487a-a51f-38b86e7483cf___RS_Erly.B 6360.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Bacterial Spot",
+            "confidence": 0.853890061378479
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\96f7a84a-cafa-487d-a032-548cfe965bdb___RS_Erly.B 9621.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Bacterial Spot",
+            "confidence": 0.9538618326187134
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\533debcd-c993-4c11-8515-9ec280cdc023___RS_Erly.B 7389.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Leaf Mold",
+            "confidence": 0.3549191653728485
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato__Target_Spot\\d10a8e5b-bf53-45de-adbe-ea42f9bcb937___Com.G_TgS_FL 9910.JPG",
+            "actual": "Tomato - Target Spot",
+            "predicted": "Tomato - Early Blight",
+            "confidence": 0.7635068893432617
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Late_blight\\2b37aa48-ff2a-461d-97db-bf92628edde1___RS_Late.B 7086.JPG",
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Septoria Leaf Spot",
+            "confidence": 0.5828078985214233
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Late_blight\\4cae9dde-fd4a-48f0-a66d-c7ed92eee6ea___GHLB2 Leaf 97.JPG",
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Leaf Mold",
+            "confidence": 0.5006975531578064
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Spider_mites_Two_spotted_spider_mite\\4ac9c932-72ee-45a7-8602-8fc1923e9e8e___Com.G_SpM_FL 9265.JPG",
+            "actual": "Tomato - Spider Mites (Two-Spotted)",
+            "predicted": "Tomato - Leaf Mold",
+            "confidence": 0.7278660535812378
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Potato___Late_blight\\93d91b96-e024-477c-9b76-796e3f1614d4___RS_LB 3297.JPG",
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Late Blight",
+            "confidence": 0.5426211953163147
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Potato___Late_blight\\954d36cb-4a20-4889-83dd-4cba7e7180f8___RS_LB 4536.JPG",
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Target Spot",
+            "confidence": 0.5445570945739746
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato__Target_Spot\\04a27dd5-fdd0-40b7-aa5a-527e15f84a99___Com.G_TgS_FL 9679.JPG",
+            "actual": "Tomato - Target Spot",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "confidence": 0.8736675381660461
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Spider_mites_Two_spotted_spider_mite\\518cbf00-c59d-48ba-9bcb-e7db50d28524___Com.G_SpM_FL 1300.JPG",
+            "actual": "Tomato - Spider Mites (Two-Spotted)",
+            "predicted": "Tomato - Leaf Mold",
+            "confidence": 0.9809920191764832
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Potato___Late_blight\\9c230647-02da-4948-9c52-dfc87bb1d34a___RS_LB 4593.JPG",
+            "actual": "Potato - Late Blight",
+            "predicted": "Tomato - Late Blight",
+            "confidence": 0.5516604781150818
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Late_blight\\3bfcacdf-3d19-47c4-a52e-6d884dfc5e20___RS_Late.B 6651.JPG",
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Septoria Leaf Spot",
+            "confidence": 0.8823884725570679
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato__Target_Spot\\08342078-4bfb-4a33-a586-a564333a1b59___Com.G_TgS_FL 0986.JPG",
+            "actual": "Tomato - Target Spot",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "confidence": 0.9119176268577576
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Septoria_leaf_spot\\8d5130bd-a47d-449e-a18a-6074d768011a___Matt.S_CG 6785.JPG",
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Potato - Early Blight",
+            "confidence": 0.584201991558075
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Late_blight\\f879b7d4-efe4-4b31-8a89-35db50d561c9___RS_Late.B 4897.JPG",
+            "actual": "Tomato - Late Blight",
+            "predicted": "Tomato - Early Blight",
+            "confidence": 0.9210017323493958
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Septoria_leaf_spot\\213cae74-0bfd-4b12-99c8-4ec8bdc69433___Matt.S_CG 2555.JPG",
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Tomato - Target Spot",
+            "confidence": 0.5231690406799316
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Septoria_leaf_spot\\ab772665-1f53-48d3-997b-920c0b2b385f___JR_Sept.L.S 2661.JPG",
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Tomato - Leaf Mold",
+            "confidence": 0.6568953990936279
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato__Target_Spot\\21aa9ddb-0051-41c7-b1e3-316c20c64483___Com.G_TgS_FL 8151.JPG",
+            "actual": "Tomato - Target Spot",
+            "predicted": "Tomato - Spider Mites (Two-Spotted)",
+            "confidence": 0.6363821625709534
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\d5bddab9-06bd-488f-a844-97bd75c6b061___RS_Erly.B 6662.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Bacterial Spot",
+            "confidence": 0.49007970094680786
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Septoria_leaf_spot\\502e3bfa-f315-4be7-988f-be4b495cf8c5___Matt.S_CG 7640.JPG",
+            "actual": "Tomato - Septoria Leaf Spot",
+            "predicted": "Pepper (Bell) - Bacterial Spot",
+            "confidence": 0.3655158281326294
+        },
+        {
+            "image": "c:\\Users\\cnive\\Ai training\\CNN\\PlantVillage\\Tomato_Early_blight\\3fa32b26-e7bb-493e-b7c2-c40e3f3df380___RS_Erly.B 9546.JPG",
+            "actual": "Tomato - Early Blight",
+            "predicted": "Tomato - Bacterial Spot",
+            "confidence": 0.9104545712471008
+        }
+    ]
+}
